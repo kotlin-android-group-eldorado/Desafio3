@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             createListItem(
                     layout,
                     i,
-                    "nome do produto",
+                    "nome do produtoAAA",
                     10.05,
                     10
             )
