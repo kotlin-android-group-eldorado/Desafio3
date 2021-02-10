@@ -1,14 +1,10 @@
 package com.dgaspar.desafio3
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
@@ -19,24 +15,22 @@ import java.io.File
 
 class NewItem : AppCompatActivity() {
 
-    var fotoapparat: Fotoapparat? = null
-    val filename = "test.png"
+    private var fotoapparat: Fotoapparat? = null
+    private val filename = "test.png"
     val sd = Environment.getExternalStorageDirectory()
-    val dest = File(sd, filename)
-    var fotoapparatState : FotoapparatState? = null
-    var cameraStatus : CameraState? = null
-    var flashState: FlashState? = null
+    private val dest = File(sd, filename)
+    private var fotoapparatState : FotoapparatState? = null
+    private var cameraStatus : CameraState? = null
+    private var flashState: FlashState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_item)
-
         createFotoapparat()
 
         cameraStatus = CameraState.BACK
         flashState = FlashState.OFF
         fotoapparatState = FotoapparatState.OFF
-
     }
 
     fun saveItem(view : View) {
@@ -44,6 +38,7 @@ class NewItem : AppCompatActivity() {
     }
 
     fun takePhoto(view : View) {
+        println("Entrou takePhotoButton")
         takePhoto()
     }
 
@@ -66,10 +61,9 @@ class NewItem : AppCompatActivity() {
 
     private fun takePhoto() {
         println("Entrou no takePhoto")
-       fotoapparat
+         fotoapparat
            ?.takePicture()
            ?.saveToFile(dest)
-
     }
 
     override fun onStart() {
@@ -84,14 +78,14 @@ class NewItem : AppCompatActivity() {
         FotoapparatState.OFF
     }
 
-    /*override fun onResume() {
+    override fun onResume() {
         super.onResume()
-        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
-            val intent = Intent(baseContext, MainActivity::class.java)
+        if(fotoapparatState == FotoapparatState.OFF){
+            val intent = Intent(baseContext, NewItem::class.java)
             startActivity(intent)
             finish()
         }
-    }*/
+    }
 
 }
 
