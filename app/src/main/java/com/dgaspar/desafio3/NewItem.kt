@@ -1,21 +1,91 @@
 package com.dgaspar.desafio3
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.MediaStore.Images
 import android.view.View
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
+import androidx.appcompat.app.AppCompatActivity
+import java.io.*
+
 
 class NewItem : AppCompatActivity() {
+    private val PERMISSION_CODE = 1000;
+    private val IMAGE_CAPTURE_CODE = 1001
+    var image_uri : Uri? = null
+    var PATH : String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_item)
+    }
+
+    // ###############################################################################
+
+    fun takePhoto(view : View){
+        println("TIRA FOTO")
+
+        //var file : File = File(getExternalFilesDir(""), FILE_NAME)
+
+        var values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+        // camera intent
+        var cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //called when image was captured from camera intent
+        if (resultCode == Activity.RESULT_OK){
+            //set image captured to image view
+            var imageView : ImageView = findViewById(R.id.imageView)
+            imageView.setImageURI(image_uri)
+
+            // get URI from bitmap
+            //var tempUri : Uri = getImageUri(applicationContext, phot)
+
+            // get path
+            var file : File = File(getRealPathFromURI(image_uri))
+            println("CCCCCCCCCCCCCCC: " + file.absolutePath)
+            PATH = file.absolutePath
+        }
+    }
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null)
+        return Uri.parse(path)
+    }
+
+    fun getRealPathFromURI(uri: Uri?): String? {
+        var path = ""
+        if (contentResolver != null) {
+            val cursor: Cursor? = contentResolver.query(uri!!, null, null, null, null)
+            if (cursor != null) {
+                cursor.moveToFirst()
+                val idx: Int = cursor.getColumnIndex(Images.ImageColumns.DATA)
+                path = cursor.getString(idx)
+                cursor.close()
+            }
+        }
+        return path
     }
 
     // ###############################################################################
@@ -49,7 +119,7 @@ class NewItem : AppCompatActivity() {
             nameEditText.text.toString() + "\t" +
             valueEditText.text.toString() + "\t" +
             quantityEditText.text.toString() + "\t" +
-            "pathImage" + "\n"
+            PATH + "\n"
         )
         fileWriter.close()
 

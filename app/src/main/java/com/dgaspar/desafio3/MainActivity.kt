@@ -4,12 +4,15 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
@@ -71,7 +74,8 @@ class MainActivity : AppCompatActivity() {
                         i,
                         tokens[1],
                         tokens[2],
-                        tokens[3]
+                        tokens[3],
+                        tokens[4]
                     )
 
                     // add horizontal line
@@ -109,9 +113,9 @@ class MainActivity : AppCompatActivity() {
         id : Int,
         name : String,
         price : String,
-        quantity : String
+        quantity : String,
+        imagePath : String
     ) {
-
         // item layout params
         var layoutParams : LayoutParams = LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -123,6 +127,24 @@ class MainActivity : AppCompatActivity() {
         var itemLayout : LinearLayout = LinearLayout(this)
         itemLayout.layoutParams = layoutParams
         itemLayout.orientation = LinearLayout.HORIZONTAL
+        itemLayout.gravity = Gravity.CENTER_VERTICAL
+
+        // imageView
+        var file : File = File(imagePath)
+        var imageView : ImageView = ImageView(this)
+        imageView.layoutParams = LinearLayout.LayoutParams(200, 200).apply {
+            setMargins(0, 0, 20, 0)
+        }
+        imageView.setBackgroundColor(Color.parseColor("#ff0000"))
+
+        if(file.exists()){
+            println("TTTTTTTTTTTTT" + imagePath)
+            var uriTemp : Uri = Uri.fromFile(file)
+            imageView.setImageURI(uriTemp)
+        } else {
+            println("TTTTTTTTTTTTT")
+        }
+        itemLayout.addView(imageView)
 
         // textView
         var nameTextView : TextView =  createTextView(
@@ -144,8 +166,8 @@ class MainActivity : AppCompatActivity() {
     ) : TextView {
         var textView : TextView = TextView(this)
         textView.layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT
         )
         textView.textSize = textSize
         textView.id = id
