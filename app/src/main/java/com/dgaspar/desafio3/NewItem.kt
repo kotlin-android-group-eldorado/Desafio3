@@ -56,22 +56,11 @@ class NewItem : AppCompatActivity() {
             var imageView : ImageView = findViewById(R.id.imageView)
             imageView.setImageURI(image_uri)
 
-            // get URI from bitmap
-            //var tempUri : Uri = getImageUri(applicationContext, phot)
-
             // get path
             var file : File = File(getRealPathFromURI(image_uri))
             println("CCCCCCCCCCCCCCC: " + file.absolutePath)
             PATH = file.absolutePath
         }
-    }
-
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null)
-        return Uri.parse(path)
     }
 
     fun getRealPathFromURI(uri: Uri?): String? {
