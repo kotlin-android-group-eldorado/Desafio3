@@ -147,6 +147,20 @@
                     android:textStyle="bold"
                 />
 
+                <Button
+                    android:id="@+id/takePhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:text="Tirar foto"
+                    android:onClick="takePhoto"
+                    />
+
+                <io.fotoapparat.view.CameraView
+                    android:id="@+id/camera_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
             </LinearLayout>
 
         </ScrollView>
